@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0D0A1E">
+  <title>A Secret Place 💜</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Login specific */
+    .login-card .form-group { margin-bottom: 1.1rem; }
+
+    .step-2-anim {
+      animation: stepFadeIn 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 1.2rem 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+    }
+    .divider span {
+      font-weight: 200;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .date-hint {
+      font-weight: 200;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.4rem;
+      letter-spacing: 0.06em;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 1.8rem;
+      font-weight: 200;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loadingScreen">
+  <div class="loading-content">
+    <span class="loading-moon">🌙</span>
+    <p class="loading-text">entering a secret place...</p>
+  </div>
+</div>
+
+<!-- Transition -->
+<div id="transitionOverlay"></div>
+
+<!-- Universe Background -->
+<div class="universe-bg"></div>
+<canvas id="starsCanvas"></canvas>
+<div class="hearts-container"></div>
+<div class="particles-container"></div>
+<div class="clouds-container"></div>
+
+<!-- Moon -->
+<div class="moon">
+  <div class="moon-halo"></div>
+  <div class="moon-sphere"></div>
+</div>
+
+<!-- Login Page -->
+<div class="page-wrapper">
+  <div class="login-container">
+    <div class="login-card glass-card">
+
+      <!-- Logo -->
+      <div class="logo-text">
+        <div class="title">
+          A Secret Place
+          <span class="emoji-badge">💜</span>
+        </div>
+        <p class="subtitle">Some stories are meant for everyone.<br>This one was written for us.</p>
+      </div>
+
+      <!-- Step 1: Name -->
+      <div id="step1" class="login-step">
+        <div class="form-group">
+          <label>What should I call you?</label>
+          <input
+            type="text"
+            id="nameInput"
+            class="input-field"
+            placeholder="Your name..."
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            maxlength="40"
+          >
+        </div>
+        <button class="btn-primary" onclick="handleNameStep()">
+          Continue &nbsp;<span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">✨</span>
+        </button>
+      </div>
+
+      <!-- Step 2: Date -->
+      <div id="step2" class="login-step hidden">
+        <div class="hello-text" id="helloText"></div>
+
+        <div class="divider"><span>enter a date that means something</span></div>
+
+        <div class="form-group">
+          <label>A special date</label>
+          <input
+            type="text"
+            id="dateInput"
+            class="input-field"
+            placeholder="DD-MM-YYYY"
+            maxlength="10"
+            autocomplete="off"
+            inputmode="numeric"
+          >
+          <p class="date-hint">Try a date that matters to us...</p>
+        </div>
+
+        <button class="btn-primary" onclick="handleDateStep()" id="unlockBtn">
+          Unlock Our Story &nbsp;<span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">✨</span>
+        </button>
+
+        <div id="errorMsg" class="error-message">
+          This place belongs to our memories <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span>
+          <br>
+          <span style="font-size:0.78rem; opacity:0.8;">But you can still leave a birthday wish for Raksitha</span>
+          <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:0.78rem"> 🎂</span>
+          <br>
+          <button class="btn-ghost" style="margin-top:1rem;font-size:0.78rem;" onclick="goToWishes()">
+            Send Birthday Wishes
+            <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif"> ❤️</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-footer">
+        <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🌙</span>
+        &nbsp;Made with love by Rahul
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Relationship counter -->
+<div class="glass-card counter-bar">
+  <span class="cb-heart">💜</span>
+  <span><span class="cb-days">0</span> days together</span>
+</div>
+
+<script src="js/universe.js"></script>
+<script>
+  // ─── LOGIN LOGIC ─────────────────────────────────
+  const VALID_DATES = ['07-09-2005', '04-07-2006', '12-10-2023'];
+
+  let enteredName = '';
+
+  function handleNameStep() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) {
+      document.getElementById('nameInput').style.borderColor = 'rgba(232,160,191,0.5)';
+      document.getElementById('nameInput').focus();
+      return;
+    }
+    enteredName = name;
+
+    // Transition to step 2
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+
+    step1.style.opacity = '0';
+    step1.style.transform = 'translateY(-10px)';
+    step1.style.transition = 'all 0.4s ease';
+
+    setTimeout(() => {
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+
+      const helloText = document.getElementById('helloText');
+      helloText.innerHTML = `Hello, ${escapeHtml(enteredName)} <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">✨</span>`;
+      step2.classList.add('step-2-anim');
+
+      setTimeout(() => {
+        document.getElementById('dateInput').focus();
+      }, 100);
+    }, 350);
+  }
+
+  function handleDateStep() {
+    const rawDate = document.getElementById('dateInput').value.trim();
+    const formatted = normalizeDate(rawDate);
+    const errorMsg = document.getElementById('errorMsg');
+    const btn = document.getElementById('unlockBtn');
+
+    if (!formatted) {
+      document.getElementById('dateInput').style.borderColor = 'rgba(232,160,191,0.5)';
+      errorMsg.style.display = 'none';
+      return;
+    }
+
+    if (VALID_DATES.includes(formatted)) {
+      // SUCCESS — moon glows, transition
+      btn.textContent = '✨ Welcome back...';
+      btn.disabled = true;
+      btn.style.opacity = '0.8';
+
+      // Store the name for the story page
+      sessionStorage.setItem('visitorName', enteredName);
+      sessionStorage.setItem('enteredDate', formatted);
+
+      // Brief glow effect before navigation
+      setTimeout(() => navigateTo('story.html'), 1600);
+
+    } else {
+      // Show the "wrong date" message
+      errorMsg.classList.add('show');
+      document.getElementById('dateInput').style.borderColor = 'rgba(232,160,191,0.4)';
+      document.getElementById('dateInput').style.animation = 'none';
+      void document.getElementById('dateInput').offsetWidth;
+    }
+  }
+
+  function goToWishes() {
+    sessionStorage.setItem('visitorName', enteredName);
+    navigateTo('wish.html');
+  }
+
+  // Auto-format date input
+  document.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('dateInput');
+    if (!dateInput) return;
+
+    dateInput.addEventListener('input', e => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length >= 2) v = v.slice(0, 2) + '-' + v.slice(2);
+      if (v.length >= 5) v = v.slice(0, 5) + '-' + v.slice(5, 9);
+      e.target.value = v;
+      e.target.style.borderColor = '';
+    });
+
+    dateInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleDateStep();
+    });
+
+    document.getElementById('nameInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleNameStep();
+    });
+
+    // Reset error on new input
+    dateInput.addEventListener('focus', () => {
+      document.getElementById('errorMsg').classList.remove('show');
+    });
+  });
+
+  function normalizeDate(input) {
+    const cleaned = input.replace(/\s/g, '');
+    // Accept DD-MM-YYYY or DD/MM/YYYY
+    const match = cleaned.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})$/);
+    if (!match) return null;
+    const d = match[1].padStart(2, '0');
+    const m = match[2].padStart(2, '0');
+    const y = match[3];
+    return `${d}-${m}-${y}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+</script>
+</body>
+</html>

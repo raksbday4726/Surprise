@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0D0A1E">
+  <title>Our Story 💜</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── inline extras for photo grid ── */
+    .pinterest-grid{columns:2;column-gap:0.9rem;max-width:800px;margin:0 auto;padding:0 0.2rem}
+    @media(min-width:860px){.pinterest-grid{columns:3}}
+    @media(max-width:400px){.pinterest-grid{columns:2;column-gap:0.6rem}}
+
+    /* ─ GALLERY CARD BASE ─ */
+    .g-card{
+      break-inside:avoid;
+      margin-bottom:1rem;
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
+      transition:transform .32s cubic-bezier(.34,1.56,.64,1),box-shadow .28s;
+      will-change:transform;
+    }
+    .g-card:hover{ transform:translateY(-5px) scale(1.025); }
+    .g-card img{ width:100%;display:block;object-fit:cover;line-height:0; }
+
+    /* STYLE A — film/polaroid look (white border + tilt + script caption) */
+    .g-film{
+      background:#fdf8f2;
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:3px;
+      padding:.55rem .55rem 2.2rem;
+      transform:rotate(var(--tilt,0deg));
+      box-shadow:0 8px 30px rgba(0,0,0,0.55),0 2px 6px rgba(0,0,0,0.3);
+      transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+      backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    }
+    .g-film:hover{ transform:rotate(0deg) scale(1.04) translateY(-5px); box-shadow:0 20px 55px rgba(0,0,0,0.6),0 0 55px rgba(179,157,219,0.2); }
+    .g-film .g-img-wrap{ width:100%;overflow:hidden;border-radius:1px;line-height:0; }
+    .g-film .g-img-wrap img{ aspect-ratio:1/1; }
+    .g-film .g-caption{ font-family:'Dancing Script',cursive;font-size:.78rem;color:rgba(30,20,50,.75);text-align:center;padding-top:.5rem;line-height:1.3; }
+    .g-film .g-date{ font-weight:400;font-size:.55rem;letter-spacing:.1em;color:rgba(30,20,50,.4);text-align:center;margin-top:.1rem; }
+
+    /* STYLE B — canva rounded card (dark glass + tall portrait) */
+    .g-canva{
+      background:rgba(20,14,40,0.6);
+      border:1px solid rgba(179,157,219,0.14);
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 6px 24px rgba(0,0,0,0.45);
+    }
+    .g-canva:hover{ box-shadow:0 18px 52px rgba(0,0,0,0.55),0 0 50px rgba(179,157,219,0.14); }
+    .g-canva .g-img-wrap img{ aspect-ratio:3/4; }
+    .g-canva .g-body{ padding:.7rem .9rem .95rem;background:rgba(13,10,30,0.55); }
+    .g-canva .g-tag{ font-weight:200;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:#B39DDB;opacity:.6;margin-bottom:.18rem; }
+    .g-canva .g-title{ font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:rgba(248,244,255,.85);line-height:1.4; }
+
+    /* STYLE C — square mosaic tile */
+    .g-tile{
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 6px 22px rgba(0,0,0,0.42);
+    }
+    .g-tile:hover{ box-shadow:0 14px 44px rgba(0,0,0,0.52); }
+    .g-tile img{ aspect-ratio:1/1; }
+
+    /* STYLE D — wide cinematic landscape */
+    .g-wide{
+      background:rgba(13,10,30,0.5);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 6px 22px rgba(0,0,0,0.42);
+    }
+    .g-wide:hover{ box-shadow:0 14px 44px rgba(0,0,0,0.52),0 0 40px rgba(179,157,219,0.1); }
+    .g-wide img{ aspect-ratio:16/9; }
+    .g-wide .g-body{ padding:.65rem .85rem .8rem; }
+    .g-wide .g-title{ font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.84rem;color:rgba(248,244,255,.72);line-height:1.35; }
+
+    /* ── SPOTIFY CARD ── */
+    .sp-card{
+      max-width:600px;margin:0 auto;
+      padding:1.8rem;
+      border-radius:24px;
+      display:grid;grid-template-columns:180px 1fr;gap:1.8rem;align-items:start;
+    }
+    @media(max-width:560px){
+      .sp-card{grid-template-columns:1fr;gap:1.2rem;padding:1.5rem;text-align:center}
+      .sp-owners{justify-content:center}
+      .sp-meta{justify-content:center}
+      .sp-btn{width:100%}
+    }
+    .sp-cover-wrap{
+      position:relative;border-radius:14px;overflow:hidden;flex-shrink:0;
+      box-shadow:0 12px 40px rgba(0,0,0,0.55),0 0 70px rgba(124,92,191,0.22);
+      aspect-ratio:1/1;width:100%;
+    }
+    .sp-cover-wrap svg,.sp-cover-wrap img{
+      width:100%;height:100%;display:block;object-fit:cover;
+      transition:transform .5s cubic-bezier(.34,1.56,.64,1);
+    }
+    .sp-card:hover .sp-cover-wrap svg,
+    .sp-card:hover .sp-cover-wrap img{transform:scale(1.04)}
+    .sp-spotify-badge{
+      position:absolute;top:.6rem;left:.6rem;
+      width:26px;height:26px;border-radius:50%;
+      background:#1DB954;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 8px rgba(0,0,0,0.45);z-index:2;
+    }
+    .sp-spotify-badge svg{width:15px;height:15px;fill:#fff}
+    .sp-cover-caption{
+      position:absolute;bottom:0;left:0;right:0;
+      padding:.5rem .7rem;
+      background:linear-gradient(to top,rgba(13,10,30,.88),transparent);
+      font-family:'Dancing Script',cursive;font-size:.72rem;
+      color:rgba(248,244,255,.72);text-align:center;z-index:2;
+    }
+    .sp-info{display:flex;flex-direction:column;gap:.65rem;min-width:0}
+    .sp-label{font-weight:200;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:#B39DDB;opacity:.7}
+    .sp-title{
+      font-family:'Cormorant Garamond',serif;font-weight:300;
+      font-size:clamp(1.2rem,3vw,1.65rem);line-height:1.15;color:#F8F4FF;
+    }
+    .sp-desc{font-weight:200;font-size:.78rem;line-height:1.85;color:rgba(240,236,248,.5);font-style:italic}
+    .sp-owners{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+    .sp-avatar{
+      width:24px;height:24px;border-radius:50%;
+      border:1.5px solid rgba(179,157,219,.35);
+      background:linear-gradient(135deg,rgba(124,92,191,.5),rgba(232,160,191,.3));
+      display:flex;align-items:center;justify-content:center;
+      font-size:.65rem;font-weight:500;color:rgba(248,244,255,.85);
+      flex-shrink:0;
+    }
+    .sp-owner-names{font-weight:300;font-size:.75rem;color:rgba(240,236,248,.58)}
+    .sp-divider{height:1px;background:rgba(255,255,255,.07);margin:.1rem 0}
+    .sp-meta{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+    .sp-meta-item{display:flex;align-items:center;gap:.35rem}
+    .sp-meta-icon{
+      width:26px;height:26px;border-radius:50%;
+      background:rgba(124,92,191,.18);border:1px solid rgba(179,157,219,.18);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.7rem;font-family:"Apple Color Emoji","Segoe UI Emoji",sans-serif;
+      flex-shrink:0;
+    }
+    .sp-meta-text{font-weight:200;font-size:.68rem;color:rgba(240,236,248,.48)}
+    .sp-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+      padding:.8rem 1.6rem;
+      background:linear-gradient(135deg,#1DB954 0%,#17a349 100%);
+      border:none;border-radius:50px;cursor:pointer;
+      color:#fff;font-family:'Outfit',sans-serif;font-weight:500;
+      font-size:.82rem;letter-spacing:.04em;
+      text-decoration:none;
+      box-shadow:0 6px 24px rgba(29,185,84,.38),0 0 40px rgba(29,185,84,.12);
+      transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,filter .3s;
+      margin-top:.2rem;
+    }
+    .sp-btn:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 36px rgba(29,185,84,.48),0 0 60px rgba(29,185,84,.18);filter:brightness(1.07)}
+    .sp-btn:active{transform:translateY(-1px) scale(.99)}
+    .sp-btn svg{width:16px;height:16px;fill:#fff;flex-shrink:0}
+    .sp-btn-arrow{opacity:.75;font-size:.9rem}
+
+    /* ── UNIFORM GALLERY GRID ── */
+    .gallery-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:.85rem;
+      max-width:720px;
+      margin:0 auto;
+    }
+    @media(max-width:500px){.gallery-grid{grid-template-columns:repeat(2,1fr);gap:.6rem}}
+    .gal-item{
+      border-radius:14px;overflow:hidden;cursor:pointer;
+      position:relative;aspect-ratio:1/1;
+      box-shadow:0 6px 20px rgba(0,0,0,0.42);
+      transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+      background:rgba(20,14,40,0.6);
+    }
+    .gal-item:hover{transform:translateY(-5px) scale(1.03);box-shadow:0 16px 44px rgba(0,0,0,0.52),0 0 44px rgba(179,157,219,0.14)}
+    .gal-item img{
+      width:100%;height:100%;display:block;object-fit:cover;
+      transition:transform .5s cubic-bezier(.34,1.56,.64,1);
+      position:absolute;inset:0;
+    }
+    .gal-item:hover img{transform:scale(1.06)}
+    .gal-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(to top,rgba(13,10,30,.8) 0%,transparent 55%);
+      opacity:0;transition:opacity .28s;
+      display:flex;align-items:flex-end;padding:.65rem .75rem;z-index:1;
+    }
+    .gal-item:hover .gal-overlay{opacity:1}
+    .gal-caption{font-family:'Dancing Script',cursive;font-size:.76rem;color:rgba(248,244,255,.88);line-height:1.3}
+
+    /* ── BOTTOM CLOUD MIST ── */
+    .content-cloud-mist{
+      position:relative;z-index:10;
+      height:130px;pointer-events:none;
+      /* removed negative margins — they caused the white-gap page break */
+      margin-top:0;margin-bottom:0;
+      overflow:hidden;
+    }
+    .mist-cloud{
+      position:absolute;bottom:-10px;
+      border-radius:50%;
+      background:rgba(124,92,191,.055);
+      filter:blur(32px);
+      animation:mistDrift linear infinite;
+    }
+    @keyframes mistDrift{
+      0%{transform:translateX(-200px);opacity:0}
+      12%{opacity:1}88%{opacity:.45}
+      100%{transform:translateX(110vw);opacity:0}
+    }
+
+    /* ── FIX page-break white flash on final section ── */
+    #finalSection{
+      position:relative;
+      z-index:10;
+      background:transparent;
+    }
+    #contentPage{
+      position:relative;
+      z-index:10;
+      background:transparent;
+    }
+
+    /* lightbox */
+    .lightbox{position:fixed;inset:0;z-index:700;background:rgba(4,2,12,.97);
+      backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:2rem;opacity:0;pointer-events:none;transition:opacity .35s}
+    .lightbox.open{opacity:1;pointer-events:all}
+    .lightbox-close{position:absolute;top:1.2rem;right:1.2rem;
+      background:rgba(255,255,255,0.08);border:none;color:#F8F4FF;
+      font-size:1.1rem;width:38px;height:38px;border-radius:50%;cursor:pointer;
+      -webkit-appearance:none;transition:background .2s;display:flex;align-items:center;justify-content:center}
+    .lightbox-close:hover{background:rgba(255,255,255,0.18)}
+    .lightbox img{max-width:90vw;max-height:78vh;object-fit:contain;
+      border-radius:6px;box-shadow:0 20px 80px rgba(0,0,0,0.85)}
+    .lightbox-caption{font-family:'Dancing Script',cursive;font-size:1rem;
+      color:#B39DDB;margin-top:1rem;opacity:.72}
+  </style>
+</head>
+<body>
+
+<div id="loadingScreen">
+  <div class="loading-content">
+    <span class="loading-moon">💜</span>
+    <p class="loading-text">stepping into our universe...</p>
+  </div>
+</div>
+<div id="transitionOverlay"></div>
+
+<div id="welcomeOverlay">
+  <div>
+    <div class="welcome-line1">Welcome back,</div>
+    <div class="welcome-line2" id="welcomeName">my favorite person <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></div>
+  </div>
+</div>
+
+<div class="universe-bg"></div>
+<canvas id="starsCanvas"></canvas>
+<div class="hearts-container"></div>
+<div class="particles-container"></div>
+<div class="clouds-container"></div>
+<div class="moon"><div class="moon-halo"></div><div class="moon-sphere"></div></div>
+
+<nav class="story-nav glass-card" id="storyNav">
+  <a href="#letterSection">Letter</a>
+  <a href="#timelineSection">Timeline</a>
+  <a href="#memoriesSection">Memories</a>
+  <a href="#playlistSection">Playlist</a>
+  <a href="#openWhenSection">Open When</a>
+  <a href="#wishesSection">Wishes</a>
+</nav>
+
+<!-- ══════════════ LANDING ══════════════ -->
+<div id="landingPage">
+
+  <section id="landingScreen" class="story-section">
+    <div>
+      <div class="landing-name-greeting">
+        <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🌙</span>&nbsp;a message for you&nbsp;<span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">✨</span>
+      </div>
+      <div class="landing-main">
+        <div class="landing-happiest">Happiest</div>
+        <div class="landing-bday">B'Day</div>
+        <div class="landing-mine">Mine!</div>
+        <div class="landing-emojis"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜 🧿</span></div>
+      </div>
+    </div>
+    <div class="landing-scroll-hint"><span class="hint-text">scroll</span><div class="hint-line"></div></div>
+  </section>
+
+  <section class="story-section">
+    <div class="story-block reveal">
+      <p class="story-line-sm">I used to wonder why the sky was so beautiful</p>
+      <h2 class="story-line-lg">Every star in the sky<br>led me to you</h2>
+      <span class="story-emoji"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">✨</span></span>
+    </div>
+  </section>
+
+  <section class="story-section">
+    <div class="story-block reveal">
+      <p class="story-line-sm">Some people leave a mark</p>
+      <h2 class="story-line-lg">Some people become memories.</h2>
+      <p class="story-line-italic">You became home.</p>
+      <span class="story-emoji"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></span>
+    </div>
+  </section>
+
+  <section class="story-section">
+    <div class="story-block reveal">
+      <p class="story-line-sm">Something changed the moment I found you</p>
+      <h2 class="story-line-lg">And suddenly...</h2>
+      <p class="story-line-italic">ordinary days became my favorite memories.</p>
+      <span class="story-emoji"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🌸</span></span>
+    </div>
+  </section>
+
+  <section id="beginSection" class="reveal">
+    <span class="begin-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span>&nbsp;our story begins here</span>
+    <button class="begin-btn" onclick="beginJourney()">Begin Our Journey <span class="btn-emoji">✨</span></button>
+  </section>
+</div>
+
+<!-- ══════════════ CONTENT ══════════════ -->
+<div id="contentPage" style="display:none;">
+
+  <!-- LETTER -->
+  <section id="letterSection" class="content-pad">
+    <div class="section-head reveal">
+      <div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💌</span>&nbsp;a letter for you</div>
+      <h2 class="font-display">To Raksitha,<br>with love</h2>
+    </div>
+    <div class="letter-wrap glass-card reveal">
+      <div class="letter-salutation">My dearest Raksitha,</div>
+      <div class="letter-body">
+        <p>I've been trying to find words big enough to hold everything I feel when I think of you. I don't think they exist — not in any language, not in any song, not in any universe.</p>
+        <p>On the day I first spoke to you, I had no idea what was beginning. I had no idea that the ordinary moments I'd lived my whole life were quietly making space for something extraordinary. You.</p>
+        <p>You are the kind of person who makes the world softer just by being in it. You make ordinary Tuesday evenings feel sacred. You make everything — everything — better.</p>
+        <p>I think about the day you first laughed with me, really laughed, and I remember thinking: <em>this is it. this is the sound I want to keep.</em></p>
+        <p>So here we are. Another year around the sun for you, and I'm just so impossibly grateful that I get to be the person who knows you. Who got to watch you grow, shine, and become more yourself with every passing day.</p>
+        <p>Today is yours. Every star in the sky belongs to you. Happy Birthday, Raksitha. You are my favorite chapter.</p>
+      </div>
+      <div class="letter-sign">Always yours, Rahul <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- COUNTER -->
+  <section class="content-pad" style="text-align:center;">
+    <div class="section-head reveal"><div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">❤️</span>&nbsp;us, in numbers</div></div>
+    <div class="counter-section reveal">
+      <div class="days-number" id="daysCount">0</div>
+      <div class="days-label">days of being connected</div>
+      <div class="days-start">since 12 October 2023 <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- TIMELINE -->
+  <section id="timelineSection" class="content-pad">
+    <div class="section-head reveal">
+      <div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">⏳</span>&nbsp;our journey</div>
+      <h2 class="font-display">How We Got Here</h2>
+    </div>
+    <div class="timeline-wrap">
+      <div class="tl-item reveal"><div class="tl-dot"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">❤️</span></div><div class="tl-content"><div class="tl-date">12 October 2023</div><h3>The Beginning</h3><p>The day everything changed. The day we became us. I didn't know it then, but this was the best decision of my life.</p></div></div>
+      <div class="tl-item reveal"><div class="tl-dot"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">✨</span></div><div class="tl-content"><div class="tl-date">First Conversation</div><h3>Hello, You</h3><p>The moment I realized — there's something different about this one. This one is special.</p></div></div>
+      <div class="tl-item reveal"><div class="tl-dot"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">📸</span></div><div class="tl-content"><div class="tl-date">First Memories Together</div><h3>Us, Captured</h3><p>The first photos. The first laughs loud enough to be remembered. The first moments I knew I wanted to keep you.</p></div></div>
+      <div class="tl-item reveal"><div class="tl-dot"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🌙</span></div><div class="tl-content"><div class="tl-date">Every Day Since</div><h3>Still Growing</h3><p>Every morning, every late night, every silly argument, every quiet moment — all of it has been the most beautiful story I've ever lived.</p></div></div>
+      <div class="tl-item reveal"><div class="tl-dot"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🎂</span></div><div class="tl-content"><div class="tl-date">4 July 2026</div><h3>Today — Your Birthday</h3><p>Another year of you. Another year of us. And somehow, I love you more today than I did yesterday.</p></div></div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- MEMORIES POLAROID SCROLL -->
+  <section id="memoriesSection" class="content-pad" style="text-align:center;">
+    <div class="section-head reveal">
+      <div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">📸</span>&nbsp;our memories</div>
+      <h2 class="font-display">Moments I Keep</h2>
+    </div>
+    <div class="memory-stage reveal">
+      <div class="polaroid-wrap">
+        <div class="polaroid" id="currentPolaroid" style="--tilt:-2deg">
+          <div class="polaroid-photo" id="polaroidPhoto"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></div>
+          <div class="polaroid-caption" id="polaroidCaption">Loading...</div>
+          <div class="polaroid-date" id="polaroidDate"></div>
+        </div>
+      </div>
+      <div class="mem-nav">
+        <button class="mem-btn" onclick="prevMemory()">← Prev</button>
+        <span class="mem-counter" id="memCounter">1 / 5</span>
+        <button class="mem-btn" onclick="nextMemory()">Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- SPOTIFY PLAYLIST -->
+  <section id="playlistSection" class="content-pad">
+    <div class="section-head reveal">
+      <div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🎵</span>&nbsp;songs that remind me of you</div>
+      <h2 class="font-display">Our Playlist</h2>
+    </div>
+
+    <div class="sp-card glass-card reveal">
+
+      <!-- Cover — AI generated purple universe artwork -->
+      <div class="sp-cover-wrap">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-label="Our Playlist Cover">
+          <defs>
+            <radialGradient id="bg1" cx="50%" cy="40%" r="70%">
+              <stop offset="0%" stop-color="#2D1B69"/>
+              <stop offset="55%" stop-color="#1A1535"/>
+              <stop offset="100%" stop-color="#0A0818"/>
+            </radialGradient>
+            <radialGradient id="moon1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFF8E7"/>
+              <stop offset="35%" stop-color="#F5E6B8"/>
+              <stop offset="70%" stop-color="#D4B870"/>
+              <stop offset="100%" stop-color="#8B6A20"/>
+            </radialGradient>
+            <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFE08A" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#FFE08A" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="pinkGlow" cx="30%" cy="75%" r="50%">
+              <stop offset="0%" stop-color="#E8A0BF" stop-opacity="0.22"/>
+              <stop offset="100%" stop-color="#E8A0BF" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="purpGlow" cx="75%" cy="60%" r="45%">
+              <stop offset="0%" stop-color="#7C5CBF" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#7C5CBF" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="blur1"><feGaussianBlur stdDeviation="2.5"/></filter>
+            <filter id="blur2"><feGaussianBlur stdDeviation="8"/></filter>
+            <filter id="blur3"><feGaussianBlur stdDeviation="18"/></filter>
+          </defs>
+
+          <!-- Background -->
+          <rect width="400" height="400" fill="url(#bg1)"/>
+          <rect width="400" height="400" fill="url(#pinkGlow)"/>
+          <rect width="400" height="400" fill="url(#purpGlow)"/>
+
+          <!-- Stars layer 1 — tiny -->
+          <g fill="white" opacity="0.55">
+            <circle cx="42" cy="28" r="0.9"/><circle cx="88" cy="55" r="0.7"/>
+            <circle cx="150" cy="18" r="1.1"/><circle cx="210" cy="42" r="0.8"/>
+            <circle cx="275" cy="22" r="0.9"/><circle cx="330" cy="38" r="0.7"/>
+            <circle cx="380" cy="15" r="1"/><circle cx="18" cy="80" r="0.8"/>
+            <circle cx="120" cy="75" r="0.9"/><circle cx="240" cy="68" r="0.7"/>
+            <circle cx="360" cy="72" r="1"/><circle cx="58" cy="115" r="0.8"/>
+            <circle cx="185" cy="105" r="0.9"/><circle cx="310" cy="95" r="0.7"/>
+            <circle cx="22" cy="150" r="0.9"/><circle cx="390" cy="135" r="0.8"/>
+          </g>
+          <!-- Stars layer 2 — medium with slight pink tint -->
+          <g fill="#E8D0F8" opacity="0.7">
+            <circle cx="68" cy="45" r="1.3"/><circle cx="175" cy="30" r="1.4"/>
+            <circle cx="295" cy="50" r="1.2"/><circle cx="355" cy="25" r="1.5"/>
+            <circle cx="30" cy="100" r="1.3"/><circle cx="220" cy="88" r="1.4"/>
+          </g>
+          <!-- Stars layer 3 — large glowing -->
+          <circle cx="130" cy="40" r="2.2" fill="white" opacity="0.9" filter="url(#blur1)"/>
+          <circle cx="130" cy="40" r="5" fill="white" opacity="0.18" filter="url(#blur2)"/>
+          <circle cx="320" cy="62" r="2" fill="#E8D0F8" opacity="0.9" filter="url(#blur1)"/>
+          <circle cx="320" cy="62" r="6" fill="#E8D0F8" opacity="0.15" filter="url(#blur2)"/>
+          <circle cx="52" cy="170" r="1.8" fill="white" opacity="0.8" filter="url(#blur1)"/>
+          <circle cx="390" cy="185" r="1.6" fill="#F7D6E0" opacity="0.8" filter="url(#blur1)"/>
+
+          <!-- Moon glow halo -->
+          <circle cx="300" cy="95" r="55" fill="url(#glow1)" filter="url(#blur3)"/>
+
+          <!-- Moon sphere -->
+          <circle cx="300" cy="95" r="42" fill="url(#moon1)"/>
+          <!-- Moon craters -->
+          <ellipse cx="285" cy="82" rx="7" ry="5" fill="rgba(0,0,0,0.1)"/>
+          <ellipse cx="310" cy="105" rx="5" ry="4" fill="rgba(0,0,0,0.08)"/>
+          <ellipse cx="295" cy="112" rx="4" ry="3" fill="rgba(0,0,0,0.07)"/>
+          <!-- Moon highlight -->
+          <ellipse cx="290" cy="82" rx="12" ry="9" fill="rgba(255,255,240,0.2)"/>
+          <!-- Moon shadow (terminator) -->
+          <path d="M 300 53 Q 342 95 300 137 Q 278 115 278 95 Q 278 75 300 53Z" fill="rgba(0,0,0,0.22)"/>
+
+          <!-- Soft clouds -->
+          <ellipse cx="80" cy="185" rx="80" ry="28" fill="rgba(179,157,219,0.06)" filter="url(#blur3)"/>
+          <ellipse cx="250" cy="210" rx="110" ry="32" fill="rgba(124,92,191,0.07)" filter="url(#blur3)"/>
+          <ellipse cx="360" cy="190" rx="70" ry="22" fill="rgba(179,157,219,0.05)" filter="url(#blur3)"/>
+
+          <!-- Floating hearts -->
+          <g opacity="0.35">
+            <path d="M 85 250 C 85 246 79 242 79 248 C 73 242 67 246 67 250 C 67 256 76 263 79 266 C 82 263 91 256 85 250Z" fill="#E8A0BF"/>
+            <path d="M 340 160 C 340 157 336 154 336 158 C 332 154 328 157 328 160 C 328 164 334 169 336 171 C 338 169 344 164 340 160Z" fill="#B39DDB" opacity="0.6"/>
+            <path d="M 160 290 C 160 287 156 284 156 288 C 152 284 148 287 148 290 C 148 294 154 299 156 301 C 158 299 164 294 160 290Z" fill="#C9A9E8"/>
+          </g>
+
+          <!-- Musical notes floating -->
+          <g fill="rgba(179,157,219,0.45)" font-family="serif" font-size="18">
+            <text x="50" y="300" transform="rotate(-15 50 300)">♪</text>
+            <text x="330" y="280" transform="rotate(12 330 280)" font-size="14">♫</text>
+            <text x="190" y="340" transform="rotate(-8 190 340)" font-size="16">♩</text>
+            <text x="260" y="175" transform="rotate(20 260 175)" font-size="12">♪</text>
+          </g>
+
+          <!-- Particles / sparkles -->
+          <g fill="white">
+            <polygon points="105,230 107,236 113,236 108,240 110,246 105,242 100,246 102,240 97,236 103,236" opacity="0.5" transform="scale(0.55) translate(85,170)"/>
+            <polygon points="105,230 107,236 113,236 108,240 110,246 105,242 100,246 102,240 97,236 103,236" opacity="0.45" transform="scale(0.4) translate(600,440)"/>
+            <polygon points="105,230 107,236 113,236 108,240 110,246 105,242 100,246 102,240 97,236 103,236" opacity="0.4" transform="scale(0.35) translate(200,720)"/>
+          </g>
+
+          <!-- Bottom lavender mist gradient -->
+          <rect x="0" y="300" width="400" height="100" fill="url(#pinkGlow)" opacity="0.6"/>
+          <rect x="0" y="340" width="400" height="60"
+            fill="rgba(45,27,105,0.35)"/>
+
+          <!-- Central glow orb (subtle) -->
+          <circle cx="200" cy="320" r="90" fill="rgba(124,92,191,0.07)" filter="url(#blur3)"/>
+
+          <!-- Text overlay -->
+          <text x="200" y="358" text-anchor="middle"
+            font-family="Georgia,serif" font-style="italic"
+            font-size="13" fill="rgba(248,244,255,0.6)" letter-spacing="1">
+            our songs · our story
+          </text>
+        </svg>
+        <div class="sp-spotify-badge" aria-label="Spotify">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <div class="sp-cover-caption">Our songs. Our story.</div>
+      </div>
+
+      <!-- Info -->
+      <div class="sp-info">
+        <div class="sp-label">Spotify Playlist</div>
+
+        <div class="sp-title">The Soundtrack of Us <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></div>
+
+        <div class="sp-desc">
+          Every lyric,<br>every melody,<br>every late-night replay...<br><br>
+          Somehow,<br>they all remind me of us.
+        </div>
+
+        <div class="sp-owners">
+          <div class="sp-avatar" aria-label="Rahul">R</div>
+          <div class="sp-avatar" aria-label="Raksitha">Ra</div>
+          <div class="sp-owner-names">Rahul &amp; Raksitha <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">✨</span></div>
+        </div>
+
+        <div class="sp-divider"></div>
+
+        <div class="sp-meta">
+          <div class="sp-meta-item">
+            <div class="sp-meta-icon"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🎵</span></div>
+            <div class="sp-meta-text">82 songs</div>
+          </div>
+          <div class="sp-meta-item">
+            <div class="sp-meta-icon"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">⏱️</span></div>
+            <div class="sp-meta-text">5h 32m</div>
+          </div>
+          <div class="sp-meta-item">
+            <div class="sp-meta-icon"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🌙</span></div>
+            <div class="sp-meta-text">Apr 2025</div>
+          </div>
+        </div>
+
+        <a class="sp-btn"
+           href="https://open.spotify.com/playlist/37gcXV48AeC9rzEqXJ3MHP?si=IldXKgCqRQGFXrr1Mlq8HQ"
+           target="_blank" rel="noopener" aria-label="Open playlist on Spotify">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          Play on Spotify
+          <span class="sp-btn-arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- OPEN WHEN -->
+  <section id="openWhenSection" class="content-pad">
+    <div class="section-head reveal">
+      <div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🌸</span>&nbsp;sealed with love</div>
+      <h2 class="font-display">Open When...</h2>
+    </div>
+    <div class="ow-grid">
+      <div class="ow-card glass-card reveal" onclick="openWhen(0)"><span class="ow-icon">😊</span><div class="ow-label">Open When</div><div class="ow-title">You're Happy</div></div>
+      <div class="ow-card glass-card reveal" onclick="openWhen(1)"><span class="ow-icon">💜</span><div class="ow-label">Open When</div><div class="ow-title">You're Sad</div></div>
+      <div class="ow-card glass-card reveal" onclick="openWhen(2)"><span class="ow-icon">🌙</span><div class="ow-label">Open When</div><div class="ow-title">You Miss Me</div></div>
+      <div class="ow-card glass-card reveal" onclick="openWhen(3)"><span class="ow-icon">✨</span><div class="ow-label">Open When</div><div class="ow-title">You Need Motivation</div></div>
+    </div>
+  </section>
+
+  <div class="ow-overlay" id="owOverlay" onclick="closeOW(event)">
+    <div class="ow-msg-card glass-card">
+      <button class="ow-close" onclick="closeOW()">✕</button>
+      <span class="ow-msg-icon" id="owIcon">💜</span>
+      <div class="ow-msg-label" id="owLabel"></div>
+      <div class="ow-msg-body" id="owBody"></div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ WISHES WALL ══ -->
+  <section id="wishesSection" class="content-pad">
+    <div class="section-head reveal">
+      <div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🎂</span>&nbsp;love from everywhere</div>
+      <h2 class="font-display">Wishes for Raksitha</h2>
+    </div>
+    <div class="ww-grid" id="wishesGrid"></div>
+    <div style="text-align:center;margin-top:2.5rem;" class="reveal">
+      <a href="wish.html" class="btn-ghost" style="text-decoration:none;display:inline-block;">Add Your Wish <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">❤️</span></a>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ PHOTO GALLERY — 6 unique photos, uniform frames ══ -->
+  <section id="photosSection" class="content-pad">
+    <div class="section-head reveal">
+      <div class="sh-label"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">🌸</span>&nbsp;our universe in pictures</div>
+      <h2 class="font-display">Us, Always</h2>
+    </div>
+
+    <!-- 6 photos, uniform square frames, 3-col desktop / 2-col mobile -->
+    <!-- Gallery: first · photo5 · Second · photo6 · fourth · VideoCapture -->
+    <!-- (fifth removed to keep 6. fifth is NOT in memories scroll either) -->
+    <div class="gallery-grid">
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/first.jpeg','The very first one')">
+        <img src="assets/images/first.jpeg" alt="First photo together" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">Just Us💜</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/photo5.jpeg','Golden hour, golden girl ✨')">
+        <img src="assets/images/photo5.jpeg" alt="Golden hour" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">Golden hour, golden girl</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/fourth.jpeg','Lazy afternoon, perfect company 🌿')">
+        <img src="assets/images/fourth.jpeg" alt="Park bench" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">A Moment to keep</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/photo6.JPG','She finds magic everywhere ✨')">
+        <img src="assets/images/photo6.JPG" alt="Toy store" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">She finds magic everywhere</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/VideoCapture.jpeg','Our favorite kind of evening 💜')">
+        <img src="assets/images/VideoCapture.jpeg" alt="Restaurant together" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">Together feels Better</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/Second.jpeg','Flowers in her hair🌸')">
+        <img src="assets/images/Second.jpeg" alt="Flower selfie" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">Flowers in her hair</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/third.jpeg','Collected Moments')">
+        <img src="assets/images/third.jpeg" alt="Flower selfie" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">Collected Moments</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/photo3.jpeg','My peace, My Person')">
+        <img src="assets/images/photo3.jpeg" alt="Flower selfie" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">My peace, My Person</div></div>
+      </div>
+
+      <div class="gal-item reveal" onclick="openLB('assets/images/photo4.jpeg','Us>Everything!')">
+        <img src="assets/images/photo4.jpeg" alt="Flower selfie" loading="lazy">
+        <div class="gal-overlay"><div class="gal-caption">Us>Everything!</div></div>
+      </div>
+      
+      
+      
+
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ── CLOUD MIST (bottom atmosphere before final) ── -->
+  <div class="content-cloud-mist" id="mistLayer" aria-hidden="true"></div>
+
+  <!-- FINAL SURPRISE -->
+  <section id="finalSection">
+    <div class="final-wrap">
+      <div class="final-pre reveal">
+        Out of all the things<br>I'm grateful for,<br><br>
+        <em>meeting you<br>will always be my favorite.</em>
+        <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif"> 💜</span>
+      </div>
+      <div class="final-bday reveal" id="finalBday">
+        Happy Birthday,<br>Raksitha
+        <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif"> 💜</span>
+      </div>
+      <div class="reveal" style="margin-top:1rem;">
+        <div class="final-date-label">12 October 2023</div>
+        <div class="final-date-memory">The best chapter of my life began.</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /contentPage -->
+
+<div class="glass-card counter-bar" id="counterBar">
+  <span class="cb-heart"><span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></span>
+  <span><span class="cb-days">0</span> days together</span>
+</div>
+
+<script src="firebase/firebase.js"></script>
+<script src="js/universe.js"></script>
+<script>
+
+// ══════════════════════════════════════════════════════
+// MEMORIES — the scrollable polaroid section
+// These 5 photos are DIFFERENT from the gallery below
+// ══════════════════════════════════════════════════════
+const memories = [
+  { photo:"assets/images/rfirst.jpeg",   caption:"Where it all Started",      date:"",   tilt:"-2deg"  },
+  { photo:"assets/images/rsecond.jpeg",  caption:"She takes up all the space", date:"Always",      tilt:"1.5deg" },
+  { photo:"assets/images/rthird.jpeg",  caption:"Just one more Us",      date:"Our moments",    tilt:"-1deg"  },
+  { photo:"assets/images/rfourth.jpeg",  caption:"Almost the End",         date:"Missing you",tilt:"2deg"  },
+  { photo:"assets/images/template.png",  caption:"It's Your Day", date:"4th July 2026",       tilt:"-1.5deg"},
+];
+
+// ══════════════════════════════════════════════════════
+// OPEN WHEN
+// ══════════════════════════════════════════════════════
+const owMessages = [
+  { icon:"😊", label:"Open When You're Happy",        body:"That smile on your face right now? That's all I ever want for you. Keep this feeling. Let it fill every corner of your heart. You deserve every bit of joy that finds its way to you. I hope it stays a long, long time." },
+  { icon:"💜", label:"Open When You're Sad",          body:"Hey. I know it hurts right now. And I want you to know — you don't have to be okay all the time. Even on the darkest days, you are still my favorite person in every universe that exists. Come find me. I'll be there. I always will be." },
+  { icon:"🌙", label:"Open When You Miss Me",         body:"Look at the moon tonight. I promise you — I'm looking at the same one. No matter how far apart we are, we're always under the same sky. And that means you're never really alone. I'm always, always there. Count to three and I'm right next to you." },
+  { icon:"✨", label:"Open When You Need Motivation", body:"You are the person who got this far. Through every difficult day, every moment of doubt, every time you almost gave up — you kept going. That is not small. That is extraordinary. You are capable of so much more than you know. The world hasn't seen your best day yet. Keep going. I believe in you completely." },
+];
+
+// ── MEMORIES POLAROID ─────────────────────────────────
+let currentMemory = 0;
+
+function updatePolaroid(idx, dir) {
+  const m = memories[idx];
+  const el = document.getElementById('currentPolaroid');
+  el.style.opacity = '0';
+  el.style.transform = `rotate(0deg) translateX(${(dir||0)*30}px)`;
+  el.style.transition = 'opacity .22s ease, transform .22s ease';
+  setTimeout(() => {
+    el.style.setProperty('--tilt', m.tilt);
+    const ph = document.getElementById('polaroidPhoto');
+    ph.innerHTML = `<img src="${escHtml(m.photo)}" alt="${escHtml(m.caption)}" loading="lazy">`;
+    document.getElementById('polaroidCaption').textContent = m.caption;
+    document.getElementById('polaroidDate').textContent = m.date;
+    document.getElementById('memCounter').textContent = `${idx+1} / ${memories.length}`;
+    el.style.opacity = '1';
+    el.style.transform = `rotate(${m.tilt})`;
+    el.style.transition = 'opacity .35s ease, transform .5s cubic-bezier(.34,1.56,.64,1)';
+  }, 230);
+}
+function nextMemory() { currentMemory=(currentMemory+1)%memories.length; updatePolaroid(currentMemory,1); }
+function prevMemory() { currentMemory=(currentMemory-1+memories.length)%memories.length; updatePolaroid(currentMemory,-1); }
+
+// ── LIGHTBOX ──────────────────────────────────────────
+function openLB(src, caption) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightboxCaption').textContent = caption;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── OPEN WHEN ─────────────────────────────────────────
+function openWhen(idx) {
+  const m = owMessages[idx];
+  document.getElementById('owIcon').textContent = m.icon;
+  document.getElementById('owLabel').textContent = m.label;
+  document.getElementById('owBody').textContent = m.body;
+  document.getElementById('owOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeOW(e) {
+  if (!e || e.target===document.getElementById('owOverlay') || (e.target&&e.target.classList.contains('ow-close'))) {
+    document.getElementById('owOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+// ── WISHES WALL ───────────────────────────────────────
+function loadWishesWall() {
+  const grid = document.getElementById('wishesGrid');
+  if (!grid) return;
+  const saved = (typeof loadWishesLocal==='function') ? loadWishesLocal() : [];
+  if (!saved.length) {
+    grid.innerHTML = `<p style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--text-muted);text-align:center;grid-column:1/-1;font-size:1rem;padding:2rem 0;">No wishes yet — be the first to leave one <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></p>`;
+    return;
+  }
+  grid.innerHTML = saved.map(w=>`
+    <div class="ww-card glass-card">
+      <div class="ww-name">${escHtml(w.name)}</div>
+      <div class="ww-msg">${escHtml(w.message)}</div>
+      <div class="ww-date">${escHtml(w.createdAt||'')}</div>
+    </div>`).join('');
+}
+
+// ── DAYS COUNTER ──────────────────────────────────────
+function countDays() {
+  const days = Math.floor((new Date()-new Date('2023-10-12'))/86400000);
+  const el = document.getElementById('daysCount');
+  if (!el) return;
+  let count=0; const step=Math.ceil(days/80);
+  const t=setInterval(()=>{ count=Math.min(count+step,days); el.textContent=count.toLocaleString('en-IN'); if(count>=days)clearInterval(t); },16);
+  const cb=document.querySelector('.cb-days'); if(cb) cb.textContent=days;
+}
+
+// ── BEGIN JOURNEY ─────────────────────────────────────
+function beginJourney() {
+  const landing=document.getElementById('landingPage');
+  const content=document.getElementById('contentPage');
+  const nav=document.getElementById('storyNav');
+  landing.style.transition='opacity .8s ease'; landing.style.opacity='0';
+  setTimeout(()=>{
+    landing.style.display='none';
+    content.style.display='block';
+    nav.classList.add('visible');
+    window.scrollTo({top:0,behavior:'instant'});
+    countDays(); loadWishesWall();
+    updatePolaroid(0,0);
+    spawnMist();
+    initReveal();
+    setTimeout(launchConfetti,1200);
+  },800);
+}
+
+// ── MIST SPAWNER ──────────────────────────────────────
+function spawnMist() {
+  const layer = document.getElementById('mistLayer');
+  if (!layer) return;
+  const sizes = [[260,90],[380,70],[300,100],[200,80],[320,60]];
+  sizes.forEach((s,i) => {
+    const el = document.createElement('div');
+    el.className = 'mist-cloud';
+    el.style.cssText = `width:${s[0]}px;height:${s[1]}px;bottom:${Math.random()*60}px;animation-duration:${55+i*14}s;animation-delay:${i*8}s;opacity:${0.5+Math.random()*0.4}`;
+    layer.appendChild(el);
+  });
+}
+
+// ── CONFETTI ──────────────────────────────────────────
+function launchConfetti() {
+  const colors=['#C9A9E8','#E8A0BF','#B39DDB','#FFFFFF','#F7D6E0'];
+  for(let i=0;i<55;i++) setTimeout(()=>{
+    const el=document.createElement('div'); el.className='conf-piece';
+    const cr=(Math.random()*720-360);
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${Math.random()*7+4}px;height:${Math.random()*7+4}px;background:${colors[Math.floor(Math.random()*colors.length)]};--cr:${cr}deg;animation-duration:${Math.random()*3+2.5}s`;
+    document.body.appendChild(el); setTimeout(()=>el.remove(),6000);
+  },i*40);
+}
+
+function initFinalConfetti(){
+  const el=document.getElementById('finalBday'); if(!el) return;
+  new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){setTimeout(launchConfetti,800);} });},{threshold:0.4}).observe(el);
+}
+
+// ── WELCOME ───────────────────────────────────────────
+function initWelcome() {
+  const name=sessionStorage.getItem('visitorName');
+  const date=sessionStorage.getItem('enteredDate');
+  const el=document.getElementById('welcomeName');
+  if(name&&el){
+    let msg=name+' 💜';
+    if(date==='04-07-2006') msg='Happy Birthday, '+name+' 💜';
+    else if(date==='07-09-2005') msg='Welcome home, Rahul 💜';
+    el.textContent=msg;
+  }
+  setTimeout(()=>{ const o=document.getElementById('welcomeOverlay'); if(o){o.classList.add('fade');setTimeout(()=>o.remove(),1100);} },2800);
+}
+
+// ── UTILS ─────────────────────────────────────────────
+function escHtml(s){const d=document.createElement('div');d.appendChild(document.createTextNode(String(s||'')));return d.innerHTML;}
+
+// ── INIT ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  initWelcome();
+  const days=Math.floor((new Date()-new Date('2023-10-12'))/86400000);
+  const cb=document.querySelector('.cb-days'); if(cb) cb.textContent=days;
+  setTimeout(()=>{ const b=document.getElementById('counterBar'); if(b)b.classList.add('visible'); },4000);
+  initFinalConfetti();
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeOW({target:document.getElementById('owOverlay')});closeLightbox();} });
+});
+</script>
+</body>
+</html>
