@@ -94,10 +94,10 @@
   </div>
 </div>
 
-<script src="firebase/firebase.js"></script>
+<script src="js/api.js"></script>
 <script src="js/universe.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     // Pre-fill name
     const saved = sessionStorage.getItem('visitorName');
     if (saved) document.getElementById('wishName').value = saved;
@@ -107,7 +107,7 @@
       document.getElementById('charCount').textContent = this.value.length;
     });
 
-    loadWishesPreview();
+    await loadWishesPreview();
   });
 
   function handlePhotoSelect(input) {
@@ -137,13 +137,24 @@
     btn.disabled = true;
     btn.style.opacity = '0.7';
 
-    saveWishLocal(name, message);
+    // Get optional uploaded file
+    const photoInput = document.getElementById('photoInput');
+    const photoFile = photoInput && photoInput.files ? photoInput.files[0] : null;
 
-    await new Promise(r => setTimeout(r, 900));
+    try {
+      await saveWishLocal(name, message, photoFile);
+    } catch (err) {
+      // Alert visitor with the validation errors or connection failures
+      alert(err.message);
+      btn.textContent = 'Send Wishes ❤️';
+      btn.disabled = false;
+      btn.style.opacity = '';
+      return;
+    }
 
     document.getElementById('wishFormWrap').style.display = 'none';
     document.getElementById('successWrap').classList.add('active');
-    loadWishesPreview();
+    await loadWishesPreview();
   }
 
   function resetForm() {
@@ -157,14 +168,18 @@
     document.getElementById('submitBtn').textContent = 'Send Wishes ❤️';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('submitBtn').style.opacity = '';
+    
+    // Clear the selected file input
+    const photoInput = document.getElementById('photoInput');
+    if (photoInput) photoInput.value = '';
   }
 
-  function loadWishesPreview() {
+  async function loadWishesPreview() {
     const grid = document.getElementById('wishesMiniGrid');
     const section = document.getElementById('wishesPreviewSection');
     if (!grid) return;
 
-    const wishes = loadWishesLocal();
+    const wishes = await loadWishesLocal();
 
     if (!wishes.length) {
       section.style.display = 'none';
