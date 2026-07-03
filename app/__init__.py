@@ -36,8 +36,10 @@ def create_app(config_class=None):
     # Auto-create tables if they don't exist (safe – create_all is a no-op for
     # tables that are already present in the database).
     # Models must be imported so SQLAlchemy's metadata knows about them.
-    import app.models.wishes  # noqa: F401
-    import app.models.uploads  # noqa: F401
+    # Use __import__ to avoid rebinding the local 'app' variable (Flask instance)
+    # with the 'app' package/module.
+    __import__('app.models.wishes')
+    __import__('app.models.uploads')
 
     with app.app_context():
         try:
