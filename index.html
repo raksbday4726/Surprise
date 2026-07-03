@@ -223,7 +223,13 @@
       return;
     }
 
-    if (VALID_DATES.includes(formatted)) {
+    const nameLower = enteredName.toLowerCase().trim();
+    const ALLOWED_NAMES = [
+      'raghul s', 'rahul', 'rahul s', 'raksitha', 'raksitha v', 
+      'raksi', 'raks', 'rakshi', 'rachitha', 'rachithaaa', 'raksithaaa'
+    ];
+
+    if (VALID_DATES.includes(formatted) && ALLOWED_NAMES.includes(nameLower)) {
       // SUCCESS — moon glows, transition
       btn.textContent = '✨ Welcome back...';
       btn.disabled = true;
@@ -237,7 +243,7 @@
       setTimeout(() => navigateTo('story.html'), 1600);
 
     } else {
-      // Show the "wrong date" message
+      // Show the "wrong date or unauthorized name" message
       errorMsg.classList.add('show');
       document.getElementById('dateInput').style.borderColor = 'rgba(232,160,191,0.4)';
       document.getElementById('dateInput').style.animation = 'none';
