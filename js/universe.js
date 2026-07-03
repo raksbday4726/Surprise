@@ -178,6 +178,15 @@ function navigateTo(url) {
   setTimeout(() => { window.location.href = url; }, 650);
 }
 
+// ─── BFCACHE (BACK-FORWARD CACHE) HANDLING ──────────
+// Reset transition overlay if returning to page via Back/Forward buttons
+window.addEventListener('pageshow', (event) => {
+  const overlay = document.getElementById('transitionOverlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+  }
+});
+
 // ─── INIT ───────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   initStars();

@@ -252,6 +252,13 @@
   // Auto-format date input
   document.addEventListener('DOMContentLoaded', () => {
     const dateInput = document.getElementById('dateInput');
+    const nameInput = document.getElementById('nameInput');
+
+    const savedName = sessionStorage.getItem('visitorName');
+    if (savedName && nameInput) {
+      nameInput.value = savedName;
+    }
+
     if (!dateInput) return;
 
     dateInput.addEventListener('input', e => {
@@ -266,9 +273,11 @@
       if (e.key === 'Enter') handleDateStep();
     });
 
-    document.getElementById('nameInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') handleNameStep();
-    });
+    if (nameInput) {
+      nameInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleNameStep();
+      });
+    }
 
     // Reset error on new input
     dateInput.addEventListener('focus', () => {
