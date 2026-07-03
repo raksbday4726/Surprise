@@ -81,14 +81,7 @@
         </button>
       </div>
 
-      <!-- Wishes received (only real ones) -->
-      <div class="wishes-preview-section" id="wishesPreviewSection">
-        <p class="wishes-preview-title">
-          <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span>
-          wishes received
-        </p>
-        <div class="wishes-mini-grid" id="wishesMiniGrid"></div>
-      </div>
+
 
     </div>
   </div>
@@ -106,8 +99,6 @@
     document.getElementById('wishText').addEventListener('input', function () {
       document.getElementById('charCount').textContent = this.value.length;
     });
-
-    await loadWishesPreview();
   });
 
   function handlePhotoSelect(input) {
@@ -154,7 +145,6 @@
 
     document.getElementById('wishFormWrap').style.display = 'none';
     document.getElementById('successWrap').classList.add('active');
-    await loadWishesPreview();
   }
 
   function resetForm() {
@@ -174,26 +164,7 @@
     if (photoInput) photoInput.value = '';
   }
 
-  async function loadWishesPreview() {
-    const grid = document.getElementById('wishesMiniGrid');
-    const section = document.getElementById('wishesPreviewSection');
-    if (!grid) return;
 
-    const wishes = await loadWishesLocal();
-
-    if (!wishes.length) {
-      section.style.display = 'none';
-      return;
-    }
-
-    section.style.display = 'block';
-    grid.innerHTML = wishes.slice(0, 5).map(w => `
-      <div class="wish-mini-card">
-        <div class="wish-mini-name">${escHtml(w.name)}</div>
-        <div class="wish-mini-text">${escHtml(w.message)}</div>
-      </div>
-    `).join('');
-  }
 
   function escHtml(s) {
     const d = document.createElement('div');
