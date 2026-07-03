@@ -42,9 +42,10 @@ def create_app(config_class=None):
     with app.app_context():
         try:
             db.create_all()
-        except Exception:
-            # Don't crash on DB init issues; API routes will return JSON errors.
-            pass
+            print("[STARTUP] db.create_all() succeeded — tables are ready.")
+        except Exception as e:
+            # Log the error but don't crash; API routes will return JSON errors.
+            print(f"[STARTUP] db.create_all() FAILED: {e}")
 
 
     from app.routes.wishes import wishes_bp
