@@ -35,6 +35,10 @@ def create_app(config_class=None):
 
     # Auto-create tables if they don't exist (safe – create_all is a no-op for
     # tables that are already present in the database).
+    # Models must be imported so SQLAlchemy's metadata knows about them.
+    import app.models.wishes  # noqa: F401
+    import app.models.uploads  # noqa: F401
+
     with app.app_context():
         try:
             db.create_all()

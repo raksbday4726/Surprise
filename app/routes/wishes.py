@@ -43,6 +43,7 @@ def get_wishes():
             }
         }), 200
     except Exception:
+        logger.exception("Failed to retrieve wishes")
         # Do not leak internal exception strings to clients.
         return jsonify({
             "success": False,
@@ -164,13 +165,13 @@ def create_wish():
 
 
     except Exception:
+        logger.exception("Upload DB failure")
         db.session.rollback()
         if saved_filepath and os.path.exists(saved_filepath):
             try:
                 os.remove(saved_filepath)
             except OSError:
                 pass
-        logger.error("Upload DB failure")
         return jsonify({
             "success": False,
             "message": "Database error: unable to save wish.",
