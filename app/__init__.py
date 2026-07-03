@@ -33,11 +33,13 @@ def create_app(config_class=None):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Production: rely on Flask-Migrate/Alembic.
-    # Render containers should run migrations externally (or via a start hook).
-    if not app.config.get('DEBUG', False):
-        with app.app_context():
-            # Never auto-create tables in production.
+    # Auto-create tables if they don't exist (safe – create_all is a no-op for
+    # tables that are already present in the database).
+    with app.app_context():
+        try:
+            db.create_all()
+        except Exception:
+            # Don't crash on DB init issues; API routes will return JSON errors.
             pass
 
 

@@ -67,11 +67,15 @@ BaseConfig.SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 
+# SSL support for cloud MySQL providers (e.g., Aiven) that require encrypted connections.
+_ssl_required = _get_env('MYSQL_SSL_REQUIRED', '').lower() in ('1', 'true', 'yes')
+
 BaseConfig.SQLALCHEMY_ENGINE_OPTIONS = {
     'pool_size': 10,
     'max_overflow': 20,
     'pool_recycle': 280,
-    'pool_pre_ping': True
+    'pool_pre_ping': True,
+    **({'connect_args': {'ssl': {'ssl': True}}} if _ssl_required else {})
 }
 
 BaseConfig.UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'uploads')
