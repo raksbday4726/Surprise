@@ -726,6 +726,7 @@
 </div>
 
 <script src="firebase/firebase.js"></script>
+<script src="js/api.js"></script>
 <script src="js/universe.js"></script>
 <script>
 
@@ -804,11 +805,11 @@ function closeOW(e) {
 }
 
 // ── WISHES WALL ───────────────────────────────────────
-function loadWishesWall() {
+async function loadWishesWall() {
   const grid = document.getElementById('wishesGrid');
   if (!grid) return;
-  const saved = (typeof loadWishesLocal==='function') ? loadWishesLocal() : [];
-  if (!saved.length) {
+  const saved = (typeof loadWishesLocal==='function') ? await loadWishesLocal() : [];
+  if (!saved || !saved.length) {
     grid.innerHTML = `<p style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--text-muted);text-align:center;grid-column:1/-1;font-size:1rem;padding:2rem 0;">No wishes yet — be the first to leave one <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif">💜</span></p>`;
     return;
   }
