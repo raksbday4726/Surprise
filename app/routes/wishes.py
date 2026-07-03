@@ -208,3 +208,44 @@ def serve_upload(filename):
     return send_from_directory(upload_dir, safe_filename)
 
 
+@wishes_bp.route('/admin/clear-wishes-temp', methods=['POST', 'GET'])
+def clear_wishes_temp():
+    """Temporary endpoint to clear all wishes and uploaded file metadata from the database, 
+    and delete the files in the uploads folder on the server.
+    """
+    try:
+        from app.models.wishes import Wish
+        from app.models.uploads import Upload
+        
+        # Delete wishes and uploads from database
+        num_wishes = db.session.query(Wish).delete()
+        num_uploads = db.session.query(Upload).delete()
+        db.session.commit()
+        
+        # Delete actual files from the uploads directory
+        upload_dir = current_app.config['UPLOAD_FOLDER']
+        deleted_files = []
+        if os.path.exists(upload_dir):
+            for filename in os.listdir(upload_dir):
+                file_path = os.path.join(upload_dir, filename)
+                if os.path.isfile(file_path) and filename != '.gitkeep':
+                    try:
+                        os.remove(file_path)
+                        deleted_files.append(filename)
+                    except Exception as e:
+                        print(f"Failed to delete {filename}: {e}")
+                        
+        return jsonify({
+            "success": True,
+            "message": f"Successfully deleted {num_wishes} wishes and {num_uploads} uploads from database.",
+            "deleted_files": deleted_files
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "message": "Failed to clear database.",
+            "error": str(e)
+        }), 500
+
+

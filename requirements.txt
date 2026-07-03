@@ -5,4 +5,4 @@ PyMySQL==1.1.1
 python-dotenv==1.0.1
 Flask-Migrate==4.0.7
 gunicorn==22.0.0
-
+Pillow==10.3.0
