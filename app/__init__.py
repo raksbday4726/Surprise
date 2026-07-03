@@ -33,13 +33,13 @@ def create_app(config_class=None):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Preserve existing behavior: attempt create tables automatically
-    # (Phase 2 will handle migrations correctly.)
-    with app.app_context():
-        try:
-            db.create_all()
-        except Exception:
+    # Production: rely on Flask-Migrate/Alembic.
+    # Render containers should run migrations externally (or via a start hook).
+    if not app.config.get('DEBUG', False):
+        with app.app_context():
+            # Never auto-create tables in production.
             pass
+
 
     from app.routes.wishes import wishes_bp
     from app.routes.health import health_bp

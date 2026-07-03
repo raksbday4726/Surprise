@@ -26,7 +26,7 @@ class BaseConfig:
 
     # SECRET_KEY
     # - In development: allow fallback for local use.
-    # - In production: require it.
+    # - In production: require it via Render env vars.
     SECRET_KEY = _get_env('SECRET_KEY', 'dev_secret_key_12345')
 
     # MySQL Database configuration
@@ -40,7 +40,6 @@ class BaseConfig:
 
     @classmethod
     def validate_or_raise(cls) -> None:
-        # Production strictness
         if cls is ProductionConfig:
             _require_env('SECRET_KEY')
             _require_env('MYSQL_USER')
@@ -49,9 +48,9 @@ class BaseConfig:
             _require_env('MYSQL_PORT')
             _require_env('MYSQL_DATABASE')
 
-        # Basic sanity
         if not cls.DB_NAME:
             raise RuntimeError('Missing MYSQL_DATABASE')
+
 
 
 # Build DB URI after class creation using the configured values.

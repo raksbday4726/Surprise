@@ -9,21 +9,22 @@ def health():
 
     Contract preserved: { success, database } with HTTP 200/503.
     """
+    # Render Health Checks require HTTP 200 with a stable JSON response.
     try:
         from app.extensions import db
-
-        # pool_pre_ping=True handles stale connections.
         with db.engine.connect():
             pass
 
         return jsonify({
             "success": True,
-            "database": "connected",
+            "status": "healthy",
         }), 200
     except Exception:
+        # Keep a consistent JSON shape; do not leak internals.
         return jsonify({
             "success": False,
-            "database": "disconnected",
+            "status": "unhealthy",
         }), 503
+
 
 
