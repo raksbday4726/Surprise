@@ -710,7 +710,7 @@
       </div>
       <div class="final-bday reveal" id="finalBday">
         Happy Birthday,<br>Raksitha
-        <span style="font-family:'Apple Color Emoji','Segoe UI Emoji',sans-serif"> 🦄</span>
+        <span style="font-family:'Apple Color Emoji',sans-serif"> 🦄</span>
       </div>
       <div class="reveal" style="margin-top:1rem;">
         <div class="final-date-label">12 October 2023</div>
@@ -886,10 +886,11 @@ function initWelcome() {
   const date=sessionStorage.getItem('enteredDate');
   const el=document.getElementById('welcomeName');
   if(name&&el){
-    let msg=name+' 💜';
-    if(date==='04-07-2006') msg='Happy Birthday, '+name+' 💜';
-    else if(date==='07-09-2005') msg='Welcome home, Rahul 💜';
-    el.textContent=msg;
+    const escapedName = escHtml(name);
+    let msg=escapedName+' <span style="font-family:\'Apple Color Emoji\',\'Segoe UI Emoji\',sans-serif">💜</span>';
+    if(date==='04-07-2006') msg='Happy Birthday, '+escapedName+' <span style="font-family:\'Apple Color Emoji\',\'Segoe UI Emoji\',sans-serif">💜</span>';
+    else if(date==='07-09-2005') msg='Welcome home, Rahul <span style="font-family:\'Apple Color Emoji\',\'Segoe UI Emoji\',sans-serif">💜</span>';
+    el.innerHTML=msg;
   }
   setTimeout(()=>{ const o=document.getElementById('welcomeOverlay'); if(o){o.classList.add('fade');setTimeout(()=>o.remove(),1100);} },2800);
 }

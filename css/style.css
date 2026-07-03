@@ -305,6 +305,17 @@ h1,h2{font-family:'Cormorant Garamond',serif;font-weight:300}
 .final-wrap{max-width:520px}
 .final-pre{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1.05rem,2.5vw,1.4rem);color:var(--text-secondary);line-height:2;margin-bottom:3rem;opacity:0.85}
 .final-bday{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2.5rem,7vw,5.5rem);background:linear-gradient(160deg,#FFFFFF 0%,#E8D4F8 50%,#C9A9E8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:1.5rem}
+/* Prevent emojis from being cut off or colored by gradient text headers */
+.emoji-reset,
+.final-bday span,
+.welcome-line2 span {
+  display: inline-block;
+  background: initial !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif !important;
+}
 .final-date-label{font-weight:200;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft-lavender);opacity:0.5;margin-bottom:0.35rem}
 .final-date-memory{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(0.88rem,2vw,1.05rem);color:var(--pink-glow);opacity:0.72}
 
